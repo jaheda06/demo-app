@@ -10,7 +10,7 @@ phases:
       - echo "Installing pytest version 6.2.5..."
       - pip install pytest==6.2.5  # Install pytest version 6.2.5
       - echo "Installing Python dependencies..."
-      - pip install -r requirements.txt
+      - pip install -r requirements.txt --verbose
 
   pre_build:
     commands:
