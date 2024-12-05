@@ -10,7 +10,7 @@ phases:
       - echo "Installing pytest version 6.2.5..."
       - pip install pytest==6.2.5  # Install pytest version 6.2.5
       - echo "Installing Python dependencies..."
-      - pip install -r samplefile.txt
+      - pip install -r requirements.txt
 
   pre_build:
     commands:
@@ -25,7 +25,7 @@ phases:
   post_build:
     commands:
       - echo "Build complete. Packaging artifacts..."
-      - aws s3 cp samplefile.txt s3://buildspec-file/samplefile.txt  
+      - aws s3 cp requirements.txt s3://buildspec-file/requirements.txt  
 
 artifacts:
   files:
