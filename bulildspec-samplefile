@@ -1,39 +1,32 @@
 version: 0.2
 
-env:
-  variables:
-    S3_BUCKET: "bucket-1-jaheda " 
-    REGION: "ap-south-1"            
-
 phases:
   install:
     runtime-versions:
-      java: openjdk21     
+      python: 3.9
     commands:
-      - echo "Installing dependencies..."
-      - echo "Verifying Java installation..."
-      - java -version
-      - echo "Verifying Maven installation..."
-      - mvn -version
+      - echo "Uninstalling any existing pytest version..."
+      - pip uninstall -y pytest  # Uninstall pytest if already installed
+      - echo "Installing pytest version 6.2.5..."
+      - pip install pytest==6.2.5  # Install pytest version 6.2.5
+      - echo "Installing Python dependencies..."
+      - pip install -r samplefile.txt
+
   pre_build:
     commands:
-      - echo "Preparing the build environment..."
-      - echo "Downloading dependencies using Maven..."
-      - mvn clean install
+      - echo "Running tests..."
+      - pytest
+
   build:
     commands:
-      - echo "Compiling the Java project..."
-      - mvn package
-      - echo "Creating a sample file for S3 upload..."
-      - echo "Sample content for the S3 bucket" > sample-file.txt
+      - echo "Building the application..."
+      - python setup.py build
+
   post_build:
     commands:
-      - echo "Uploading the sample file to S3..."
-      - aws s3 cp sample-file.txt s3://$S3_BUCKET/ --region $REGION
-      - echo "File successfully uploaded to S3 bucket: $S3_BUCKET"
+      - echo "Build complete. Packaging artifacts..."
+      - aws s3 cp samplefile.txt s3://buildspec-file/samplefile.txt  
 
 artifacts:
   files:
-    - target/*.jar              
-    - sample-file.txt            
-  discard-paths: yes
+    - '*/'
