@@ -5,19 +5,17 @@ phases:
     runtime-versions:
       python: 3.9
     commands:
-      - echo "Ensuring pip is up-to-date..."
-      - python -m pip install --upgrade pip  # Upgrade pip
-      - echo "Safely uninstalling pytest if it exists..."
-      - pip uninstall -y pytest || echo "pytest not installed, skipping uninstall."
+      - echo "Uninstalling any existing pytest version..."
+      - pip uninstall -y pytest  # Uninstall pytest if already installed
       - echo "Installing pytest version 6.2.5..."
-      - pip install pytest==6.2.5
-      - echo "Installing Python dependencies from requirements.txt..."
+      - pip install pytest==6.2.5  # Install pytest version 6.2.5
+      - echo "Installing Python dependencies..."
       - pip install -r requirements.txt
 
   pre_build:
     commands:
-      - echo "Running pytest to execute tests..."
-      - pytest || echo "Tests failed but continuing build."
+      - echo "Running tests..."
+      - pytest
 
   build:
     commands:
@@ -26,10 +24,9 @@ phases:
 
   post_build:
     commands:
-      - echo "Build complete. Uploading requirements.txt to S3..."
-      - aws s3 cp requirements.txt s3://buildspec-file/requirements.txt
+      - echo "Build complete. Packaging artifacts..."
+      - aws s3 cp requirements.txt s3://buildspec-file/requirements.txt  
 
 artifacts:
   files:
-    - '**/*'
-  discard-paths: yes 
+    - '*/'
